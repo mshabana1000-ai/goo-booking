@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GOO Booking</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; text-align: center; background: #f4f4f4; }
+    header { background: #007BFF; padding: 20px; color: white; font-size: 24px; font-weight: bold; }
+    #map { height: 400px; width: 100%; margin-top: 20px; }
+    form { background: white; max-width: 600px; margin: 20px auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    input, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+    button { background: #007BFF; color: white; border: none; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    footer { margin: 20px; font-size: 14px; color: #777; }
+    img.logo { width: 150px; margin: 20px auto; display: block; }
+  </style>
+</head>
+<body>
+  <header>GOO Booking</header>
+  <img src="logo.png" alt="App Logo" class="logo">
+
+  <form>
+    <h2>احجز رحلتك</h2>
+    <input type="text" id="pickup" placeholder="نقطة الانطلاق">
+    <input type="text" id="dropoff" placeholder="الوجهة">
+    <button type="button" onclick="calculateRoute()">تأكيد الحجز</button>
+  </form>
+
+  <div id="map"></div>
+
+  <footer>© 2025 GOO Booking</footer>
+
+  <script>
+    let map, directionsService, directionsRenderer;
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 30.0444, lng: 31.2357 }, // Cairo
+        zoom: 12,
+      });
+      directionsService = new google.maps.DirectionsService();
+      directionsRenderer = new google.maps.DirectionsRenderer();
+      directionsRenderer.setMap(map);
+    }
+
+    function calculateRoute() {
+      const pickup = document.getElementById("pickup").value;
+      const dropoff = document.getElementById("dropoff").value;
+
+      if (pickup && dropoff) {
+        const request = {
+          origin: pickup,
+          destination: dropoff,
+          travelMode: google.maps.TravelMode.DRIVING,
+        };
+        directionsService.route(request, (result, status) => {
+          if (status == "OK") {
+            directionsRenderer.setDirections(result);
+          } else {
+            alert("تعذر إيجاد مسار: " + status);
+          }
+        });
+      } else {
+        alert("من فضلك ادخل نقطتي الانطلاق والوجهة");
+      }
+    }
+  </script>
+
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcEVUSNBsyKAmPf73Vfoue08qGvXRKibY&callback=initMap"></script>
+</body>
+</html>

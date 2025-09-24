@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>GOO Booking Form</title>
+</head>
+<body style="direction: rtl; font-family: Arial, sans-serif;">
+  <div style="max-width: 420px; margin: auto; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); background: #fff;">
+    <h2 style="text-align:center; color:#DAA520; margin-bottom: 20px;">🚖 اطلب مشوارك مع GOO</h2>
+    
+    <!-- Pickup -->
+    <label style="font-weight: bold;">📍 مكان الركوب</label>
+    <input id="pickup" type="text" placeholder="اكتب عنوانك أو حدد من الخريطة" style="width:100%; padding:10px; margin:8px 0 15px; border:1px solid #ccc; border-radius:8px;">
+    
+    <!-- Drop-off -->
+    <label style="font-weight: bold;">🎯 مكان الوصول</label>
+    <input id="dropoff" type="text" placeholder="اكتب وجهتك أو حدد من الخريطة" style="width:100%; padding:10px; margin:8px 0 15px; border:1px solid #ccc; border-radius:8px;">
+    
+    <!-- Map -->
+    <div id="map" style="width:100%; height:300px; margin:15px 0; border-radius:10px;"></div>
+    
+    <!-- Payment -->
+    <label style="font-weight: bold;">💵 طريقة الدفع</label>
+    <select style="width:100%; padding:10px; margin:8px 0 20px; border:1px solid #ccc; border-radius:8px;">
+      <option>كاش 💵</option>
+    </select>
+    
+    <!-- Button -->
+    <button style="width:100%; padding:15px; background:#DAA520; color:#fff; font-size:16px; font-weight:bold; border:none; border-radius:10px; cursor:pointer;">
+      ✅ تأكيد الطلب
+    </button>
+  </div>
+
+  <script>
+    function initMap() {
+      var center = { lat: 30.0444, lng: 31.2357 }; // القاهرة
+      var map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 12,
+        center: center
+      });
+
+      var pickupMarker = new google.maps.Marker({ map: map, draggable: true, position: center });
+      var dropoffMarker = new google.maps.Marker({ map: map, draggable: true, position: { lat: 30.05, lng: 31.24 } });
+
+      var geocoder = new google.maps.Geocoder();
+
+      pickupMarker.addListener("dragend", function () {
+        geocoder.geocode({ location: pickupMarker.getPosition() }, function (results, status) {
+          if (status === "OK" && results[0]) {
+            document.getElementById("pickup").value = results[0].formatted_address;
+          }
+        });
+      });
+
+      dropoffMarker.addListener("dragend", function () {
+        geocoder.geocode({ location: dropoffMarker.getPosition() }, function (results, status) {
+          if (status === "OK" && results[0]) {
+            document.getElementById("dropoff").value = results[0].formatted_address;
+          }
+        });
+      });
+    }
+  </script>
+
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcEVUSNBsyKAmPf73Vfoue08qGvXRKibY&callback=initMap"></script>
+</body>
+</html>
